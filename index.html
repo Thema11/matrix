@@ -551,13 +551,22 @@ function sendToSheet(k) {
   const btn = document.getElementById('send-btn-' + k);
   if (btn) { btn.disabled = true; btn.textContent = '⏳ جاري الإرسال...'; }
 
-  // ✅ img trick — نفس أسلوب مشروع الورشة الذي يعمل بدون CORS
-  var img = new Image();
-  img.onload = img.onerror = function() {
-    showToast('✅ تم الحفظ في Google Sheets بنجاح', 'success');
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    showToast('✅ تم إرسال النتائج بنجاح إلى Google Sheets', 'success');
+  })
+  .catch(function(err) {
+    console.error('خطأ في الإرسال:', err);
+    showToast('❌ فشل الإرسال — تحقق من الاتصال بالإنترنت', 'error');
+  })
+  .finally(function() {
     if (btn) { btn.disabled = false; btn.textContent = '📤 إرسال النتائج'; }
-  };
-  img.src = GAS_URL + '?data=' + encodeURIComponent(JSON.stringify(payload));
+  });
 }
 
 // ══════════════════════════════════════════════════════════
