@@ -100,21 +100,6 @@ th,td{border:1px solid var(--border);text-align:center;vertical-align:middle;pad
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.success{background:var(--pp-green)}
 .toast.error{background:#c0392b}
-
-/* ── Score Dropdown ── */
-.score-select{
-  width:58px;height:36px;
-  border:2px solid var(--border);border-radius:6px;
-  font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;
-  color:var(--text);background:#fff;cursor:pointer;outline:none;
-  padding:0 2px;text-align:center;
-  -webkit-appearance:none;appearance:none;
-  transition:border-color .15s,background .15s;
-}
-.score-select:focus{border-color:var(--pp-green);box-shadow:0 0 0 3px rgba(0,99,65,0.12)}
-.score-select.high{background:#e6f4ee;border-color:#00a060;color:#006341}
-.score-select.mid{background:#fffbea;border-color:#c9a227;color:#8a6d0a}
-.score-select.low{background:#fdecea;border-color:#c0392b;color:#922b21}
 </style>
 </head>
 <body>
@@ -317,7 +302,8 @@ function build(k) {
   <tr>
     ${D.criteria.map((c,ci)=>`
       <th class="th-criteria">
-        <span>${c.name}</span>
+        <span style="cursor:pointer" onclick="editCriteria('${k}',${ci})">${c.name}</span>
+        <button onclick="removeCol('${k}',${ci})" style="display:block;margin:3px auto 0;background:rgba(255,255,255,0.15);border:none;border-radius:3px;color:#fff;font-size:9px;cursor:pointer;padding:1px 4px">✕</button>
       </th>`).join('')}
   </tr>
   <tr>
@@ -341,20 +327,20 @@ function build(k) {
 
     h += `<tr>
       <td style="font-size:12px;font-weight:700;color:var(--text3);background:var(--pp-light)">${r+1}</td>
-      <td class="td-proposal">
-        <span>${row}</span>
+      <td class="td-proposal" ondblclick="openModal('${k}','row',${r})" title="انقر مرتين للتعديل">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:5px">
+          <span>${row}</span>
+          <button onclick="openModal('${k}','row',${r})" style="flex-shrink:0;background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px" title="تعديل">✏️</button>
+        </div>
+        <button onclick="removeRow('${k}',${r})" style="margin-top:3px;background:none;border:none;color:#c0392b;cursor:pointer;font-size:10px">✕ حذف</button>
       </td>
-      ${D.criteria.map((_,c)=>{
-        const cur=D.scores[r][c]||0;
-        const cl=cur===0?'':cur/D.criteria[c].weight>=.8?'high':cur/D.criteria[c].weight>=.5?'mid':'low';
-        return `<td class="td-score-input">
-          <select class="score-select ${cl}"
-            onchange="DATA['${k}'].scores[${r}][${c}]=+this.value;this.className='score-select'+(+this.value?(' '+(+this.value/${D.criteria[c].weight}>=.8?'high':+this.value/${D.criteria[c].weight}>=.5?'mid':'low')):'');updateTotals('${k}')">
-            <option value="0" ${cur===0?'selected':''}>—</option>
-            ${[1,2,3,4,5,6,7,8,9,10].map(v=>`<option value="${v}" ${cur===v?'selected':''}>${v}</option>`).join('')}
-          </select>
-        </td>`;
-      }).join('')}
+      ${D.criteria.map((_,c)=>`<td class="td-score-input">
+        <input type="number" class="score-input ${cls(D.scores[r][c],D.criteria[c].weight)}"
+          value="${D.scores[r][c]||''}" min="0" max="${D.criteria[c].weight}" placeholder="—"
+          oninput="D['scores'][${r}][${c}]=+this.value||0;setInputClass(this,+this.value,${D.criteria[c].weight});updateTotals('${k}')"
+          onfocus="this.select()"
+          onkeydown="nav(event,'${k}',${r},${c})">
+      </td>`).join('')}
       <td class="td-total">${totalHtml}</td>
       <td class="td-rank" style="font-size:${rank<=3?'18':'13'}px">${total>0?medal:'—'}</td>
     </tr>`;
@@ -502,7 +488,7 @@ function exportCSV(k){
 // ══════════════════════════════════════════════════════════
 
 // ← ضعي رابط Web App هنا بعد نشره من Google Apps Script
-const GAS_URL = 'https://script.google.com/macros/s/AKfycby9b9U0Y4CfYW0iFZbiO1uOZLsginAL3GxAzmYV7NqspiJv8yZrRWhvEpwOqYJUTbM3yQ/exec';
+const GAS_URL = 'YOUR_WEB_APP_URL_HERE';
 
 function showToast(msg, type, duration) {
   duration = duration || 3500;
@@ -551,13 +537,22 @@ function sendToSheet(k) {
   const btn = document.getElementById('send-btn-' + k);
   if (btn) { btn.disabled = true; btn.textContent = '⏳ جاري الإرسال...'; }
 
-  // إرسال عبر GET في URL — يتجاوز CORS بالكامل مثل مشروع الورشة
-  var img = new Image();
-  img.onload = img.onerror = function() {
-    showToast('✅ تم الحفظ في Google Sheets بنجاح', 'success');
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    showToast('✅ تم إرسال النتائج بنجاح إلى Google Sheets', 'success');
+  })
+  .catch(function(err) {
+    console.error('خطأ في الإرسال:', err);
+    showToast('❌ فشل الإرسال — تحقق من الاتصال بالإنترنت', 'error');
+  })
+  .finally(function() {
     if (btn) { btn.disabled = false; btn.textContent = '📤 إرسال النتائج'; }
-  };
-  img.src = GAS_URL + '?data=' + encodeURIComponent(JSON.stringify(payload));
+  });
 }
 
 // ══════════════════════════════════════════════════════════
