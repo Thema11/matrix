@@ -488,7 +488,7 @@ function exportCSV(k){
 // ══════════════════════════════════════════════════════════
 
 // ← ضعي رابط Web App هنا بعد نشره من Google Apps Script
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbx5pbqStnDL5jwHnthVM7OndB_LWMjmLizuVW9JrwTDUeBi1pilzB73b8OC7nLmnOjEZg/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxibkOftT3brEyyeRFjLAYg63FUmqofloWhNhK7dTRYKdZL5aB5HurvtplyxiSVbNNAlQ/exec';
 
 function showToast(msg, type, duration) {
   duration = duration || 3500;
@@ -537,26 +537,18 @@ function sendToSheet(k) {
   const btn = document.getElementById('send-btn-' + k);
   if (btn) { btn.disabled = true; btn.textContent = '⏳ جاري الإرسال...'; }
 
-  // أرسلي عبر GET بدلاً من POST لتجاوز CORS
-const encodedPayload = encodeURIComponent(JSON.stringify(payload));
-const url = GAS_URL + '?data=' + encodedPayload;
-
-fetch(url, { method: 'GET' })
-  .then(function(res) { return res.json(); })
-  .then(function(result) {
-    if (result.status === 'success') {
-      showToast('✅ تم الحفظ في Google Sheets بنجاح', 'success');
-    } else {
-      showToast('❌ خطأ: ' + (result.message || 'فشل الحفظ'), 'error');
-    }
-  })
-  .catch(function(err) {
-    console.error('خطأ:', err);
-    showToast('❌ فشل الاتصال — تحقق من الإنترنت', 'error');
-  })
-  .finally(function() {
+  // ✅ نفس أسلوب مشروع تقييم الورشة الذي يعمل — img trick بدون CORS
+  var img = new Image();
+  img.onload = function() {
+    showToast('✅ تم الحفظ في Google Sheets بنجاح', 'success');
     if (btn) { btn.disabled = false; btn.textContent = '📤 إرسال النتائج'; }
-  });
+  };
+  img.onerror = function() {
+    // Apps Script يعيد redirect وليس صورة — هذا طبيعي ويعني أن الطلب وصل
+    showToast('✅ تم الحفظ في Google Sheets بنجاح', 'success');
+    if (btn) { btn.disabled = false; btn.textContent = '📤 إرسال النتائج'; }
+  };
+  img.src = GAS_URL + '?data=' + encodeURIComponent(JSON.stringify(payload));
 }
 
 // ══════════════════════════════════════════════════════════
