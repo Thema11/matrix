@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مصفوفة تقييم رؤية ورسالة النيابة العامة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pp-green:#006341;--pp-green2:#004d32;--pp-green3:#00804f;
+  --pp-light:#e8f5ef;--gold:#c9a227;--gold2:#e8c040;
+  --cream:#faf8f3;--border:#d4e8de;--text:#1a2e24;
+  --text2:#3d6b52;--text3:#6b9e83;
+  --shadow:0 2px 12px rgba(0,99,65,0.10);
+  --shadow2:0 4px 24px rgba(0,99,65,0.15);
+}
+body{font-family:'Cairo','Segoe UI',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,var(--pp-green2) 0%,var(--pp-green) 60%,var(--pp-green3) 100%);color:#fff;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 20px rgba(0,0,0,0.2)}
+.header-logo{display:flex;align-items:center;gap:14px}
+.logo-circle{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:24px}
+.header-text .t1{font-size:17px;font-weight:800}
+.header-text .t2{font-size:11px;color:rgba(255,255,255,0.7);margin-top:1px}
+.header-badge{background:rgba(201,162,39,0.2);border:1px solid rgba(201,162,39,0.5);border-radius:20px;padding:6px 16px;font-size:12px;color:var(--gold2);font-weight:700}
+
+/* TABS */
+.tabs-bar{background:var(--pp-green2);display:flex;gap:0;padding:0 40px;border-bottom:3px solid var(--pp-green3)}
+.tab-btn{padding:12px 28px;color:rgba(255,255,255,0.65);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .2s;white-space:nowrap}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,0.05)}
+.tab-btn.active{color:var(--gold2);border-bottom-color:var(--gold2);background:rgba(201,162,39,0.08)}
+
+/* CONTENT */
+.tab-panel{display:none}.tab-panel.active{display:block}
+.content{max-width:1500px;margin:0 auto;padding:24px 24px 60px}
+
+/* CONTROLS */
+.controls{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+.btn{padding:9px 20px;border-radius:8px;border:none;cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;transition:all .2s;display:flex;align-items:center;gap:6px}
+.btn-primary{background:var(--pp-green);color:#fff}.btn-primary:hover{background:var(--pp-green2);box-shadow:var(--shadow2)}
+.btn-secondary{background:#fff;color:var(--pp-green);border:2px solid var(--pp-green)}.btn-secondary:hover{background:var(--pp-light)}
+.btn-gold{background:var(--gold);color:#fff}.btn-gold:hover{background:var(--gold2)}
+.spacer{flex:1}
+
+/* STATS */
+.stats-bar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 16px;flex:1;min-width:130px;display:flex;flex-direction:column;align-items:center;box-shadow:var(--shadow)}
+.stat-num{font-size:22px;font-weight:900;color:var(--pp-green);line-height:1}
+.stat-lbl{font-size:10px;color:var(--text3);margin-top:2px;font-weight:600}
+
+/* TABLE */
+.table-wrap{background:#fff;border-radius:14px;box-shadow:var(--shadow2);overflow:auto;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;table-layout:auto}
+th,td{border:1px solid var(--border);text-align:center;vertical-align:middle;padding:7px 4px}
+.th-group{background:var(--pp-green);color:#fff;font-size:14px;font-weight:800;padding:11px 8px}
+.th-criteria{background:var(--pp-green2);color:#fff;font-size:11px;font-weight:700;padding:7px 4px;line-height:1.3;min-width:72px}
+.th-num{background:var(--pp-green2);color:rgba(255,255,255,0.7);font-size:12px;font-weight:600;width:40px}
+.th-proposal-col{background:var(--pp-green2);color:#fff;font-size:13px;font-weight:700;text-align:right;padding:7px 10px;min-width:240px}
+.tr-weights td{background:rgba(0,99,65,0.07);font-size:13px;font-weight:800;color:var(--pp-green);padding:5px 4px}
+.td-weight-label{background:rgba(0,99,65,0.07);font-size:11px;font-weight:700;color:var(--text2);text-align:right;padding:5px 10px}
+.td-proposal{text-align:right;padding:8px 10px;font-size:12px;font-weight:600;color:var(--text);line-height:1.55;background:#fff;border-right:3px solid var(--pp-green)}
+.td-score-input{padding:3px;background:#fff}
+.score-input{width:44px;height:34px;border:2px solid var(--border);border-radius:6px;text-align:center;font-size:13px;font-weight:800;font-family:'Cairo',sans-serif;color:var(--text);background:#fff;transition:all .15s;outline:none}
+.score-input:focus{border-color:var(--pp-green);box-shadow:0 0 0 3px rgba(0,99,65,0.12)}
+.score-input::-webkit-inner-spin-button,.score-input::-webkit-outer-spin-button{-webkit-appearance:none}
+.score-input.high{background:#e6f4ee;border-color:#00a060;color:#006341}
+.score-input.mid{background:#fffbea;border-color:#c9a227;color:#8a6d0a}
+.score-input.low{background:#fdecea;border-color:#c0392b;color:#922b21}
+.td-total{font-size:17px;font-weight:900;background:#fff;min-width:68px}
+.td-rank{font-size:13px;font-weight:800;min-width:48px;background:#fff}
+.result-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:3px}
+.result-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--pp-green3),var(--pp-green));transition:width .5s ease}
+.w-input{width:44px;height:26px;text-align:center;border:1px solid var(--border);border-radius:5px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:800;color:var(--pp-green);background:transparent;outline:none}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:14px;padding:26px;width:500px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.25)}
+.modal-title{font-size:15px;font-weight:800;color:var(--pp-green);margin-bottom:14px}
+.modal textarea{width:100%;padding:11px;border:2px solid var(--border);border-radius:8px;font-family:'Cairo',sans-serif;font-size:13px;resize:vertical;min-height:90px;outline:none;transition:border-color .2s}
+.modal textarea:focus{border-color:var(--pp-green)}
+.modal-btns{display:flex;gap:10px;margin-top:14px;justify-content:flex-end}
+
+@media print{.controls,.tabs-bar,.modal-overlay,.btn{display:none!important}.content{padding:0}.table-wrap{box-shadow:none;border:1px solid #ccc}}
+
+/* ── زر إرسال النتائج + Toast ── (إضافة جديدة فقط) */
+.btn-send{background:var(--pp-green3);color:#fff}
+.btn-send:hover{background:var(--pp-green);box-shadow:var(--shadow2)}
+.btn-send:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(30px);
+  padding:13px 30px;border-radius:10px;
+  font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;
+  color:#fff;z-index:9999;
+  opacity:0;transition:all .35s ease;pointer-events:none;
+  box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--pp-green)}
+.toast.error{background:#c0392b}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo">
+    <div class="logo-circle">⚖️</div>
+    <div class="header-text">
+      <div class="t1">النيابة العامة — المملكة العربية السعودية</div>
+      <div class="t2">Kingdom of Saudi Arabia · Public Prosecution</div>
+    </div>
+  </div>
+  <div class="header-badge">أدوات تقييم الهوية المؤسسية</div>
+</header>
+
+<!-- التبويبات -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="showTab('vision',this)">🎯 تقييم مقترحات الرؤية</button>
+  <button class="tab-btn" onclick="showTab('mission',this)">📋 تقييم مقترحات الرسالة</button>
+  <button class="tab-btn" onclick="showTab('values',this)">💎 تقييم القيم المؤسسية</button>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     التبويب الأول: الرؤية
+════════════════════════════════════════════════════ -->
+<div id="tab-vision" class="tab-panel active">
+<div class="content">
+  <div class="stats-bar" id="v-stats"></div>
+  <div class="controls">
+    <button class="btn btn-primary" onclick="addRow('v')">➕ إضافة مقترح</button>
+    <button class="btn btn-secondary" onclick="addCol('v')">📋 إضافة معيار</button>
+    <button class="btn btn-gold" onclick="exportCSV('v')">📥 تصدير Excel</button>
+    <button class="btn btn-secondary" onclick="window.print()">🖨️ طباعة</button>
+    <button class="btn btn-send" id="send-btn-v" onclick="sendToSheet('v')">📤 إرسال النتائج</button>
+    <div class="spacer"></div>
+    <button class="btn btn-secondary" onclick="clearScores('v')">🗑️ مسح الدرجات</button>
+  </div>
+  <div class="table-wrap"><table id="v-table"></table></div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     التبويب الثاني: الرسالة
+════════════════════════════════════════════════════ -->
+<div id="tab-mission" class="tab-panel">
+<div class="content">
+  <div class="stats-bar" id="m-stats"></div>
+  <div class="controls">
+    <button class="btn btn-primary" onclick="addRow('m')">➕ إضافة مقترح</button>
+    <button class="btn btn-secondary" onclick="addCol('m')">📋 إضافة معيار</button>
+    <button class="btn btn-gold" onclick="exportCSV('m')">📥 تصدير Excel</button>
+    <button class="btn btn-secondary" onclick="window.print()">🖨️ طباعة</button>
+    <button class="btn btn-send" id="send-btn-m" onclick="sendToSheet('m')">📤 إرسال النتائج</button>
+    <div class="spacer"></div>
+    <button class="btn btn-secondary" onclick="clearScores('m')">🗑️ مسح الدرجات</button>
+  </div>
+  <div class="table-wrap"><table id="m-table"></table></div>
+</div>
+</div>
+
+<!-- ════ التبويب الثالث: القيم ════ -->
+<div id="tab-values" class="tab-panel">
+<div class="content">
+  <div class="stats-bar" id="val-stats"></div>
+  <div class="controls">
+    <button class="btn btn-primary" onclick="addRow('val')">➕ إضافة قيمة</button>
+    <button class="btn btn-secondary" onclick="addCol('val')">📋 إضافة معيار</button>
+    <button class="btn btn-gold" onclick="exportCSV('val')">📥 تصدير Excel</button>
+    <button class="btn btn-secondary" onclick="window.print()">🖨️ طباعة</button>
+    <button class="btn btn-send" id="send-btn-val" onclick="sendToSheet('val')">📤 إرسال النتائج</button>
+    <div class="spacer"></div>
+    <button class="btn btn-secondary" onclick="clearScores('val')">🗑️ مسح الدرجات</button>
+  </div>
+  <div class="table-wrap"><table id="val-table"></table></div>
+</div>
+</div>
+
+<!-- مودال -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">✏️ تعديل النص</div>
+    <textarea id="modal-input" rows="4" placeholder="اكتب النص هنا..."></textarea>
+    <div style="font-size:11px;color:var(--text3);margin-top:5px">نصيحة: اجعله مختصراً وواضحاً ومعبّراً</div>
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="document.getElementById('modal-overlay').classList.remove('open')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveModal()">✅ حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast للإشعارات (إضافة جديدة) -->
+<div class="toast" id="app-toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// البيانات
+// ══════════════════════════════════════════════════════════
+const DATA = {
+  v: {
+    criteriaLabel: "معايير تقييم الرؤية",
+    rowLabel: "مقترحات رؤية النيابة العامة",
+    criteria: [
+      {name:"محفِّزة للموظفين",weight:10},
+      {name:"مرتبطة بالتوجهات الوطنية",weight:10},
+      {name:"تساهم في التحول نحو المستقبل",weight:10},
+      {name:"تعكس اختصاص النيابة العامة",weight:10},
+      {name:"طموحة",weight:10},
+      {name:"مختصرة",weight:10},
+      {name:"واضحة",weight:10},
+      {name:"واقعية",weight:10},
+      {name:"لائقة",weight:10},
+    ],
+    rows: [
+      "نموذج وطني لحماية المجتمع وتعزيز مبادئ العدالة الناجزة والنزيهة",
+      "تعزيز العدالة وحماية المجتمع بأداء متميز ريادي.",
+      "تحقيق العدالة الجزائية، وصون الحقوق، وترسيخ سيادة النظام لتحقيق مجتمع آمن ومستقر.",
+      "نموذج وطني رائد في تحقيق العدالة الناجزة، وحماية المجتمع، وضمان مشروعية الإجراءات الجزائية.",
+      "مصدر ترسيخ العدالة، وحماية الحقوق، وتعزيز الثقة في المنظومة العدلية.",
+      "التميز في حماية الحق العام وتحقيق العدالة الجزائية وفق أعلى معايير النزاهة والكفاءة والضمانات النظامية.",
+    ],
+    scores: null,
+  },
+  val: {
+    criteriaLabel: "معايير تقييم القيم المؤسسية",
+    rowLabel: "قيم النيابة العامة",
+    criteria: [
+      {name:"واضحة",weight:10},
+      {name:"ترتبط بطبيعة العمل النيابي",weight:10},
+      {name:"قابلة للتطبيق السلوكي",weight:10},
+      {name:"تتسق مع ثقافة النيابة العامة",weight:10},
+      {name:"قابلة للقياس",weight:10},
+      {name:"سهلة الفهم والحفظ",weight:10},
+    ],
+    rows: [
+      "الشرعية","الاستقلالية","الحيادية","السرية التامة",
+      "النزاهة","الكفاءة","التواصل","اللياقة المهنية",
+      "العدالة","الإنجاز","المسؤولية","حماية الحقوق",
+    ],
+    scores: null,
+  },
+  m: {
+    criteriaLabel: "معايير تقييم الرسالة",
+    rowLabel: "رسائل مقترحة للنيابة العامة",
+    criteria: [
+      {name:"تصف اختصاص النيابة العامة",weight:10},
+      {name:"تحدد المستفيدين",weight:10},
+      {name:"تحدد الخدمات التي تقدمها النيابة العامة",weight:10},
+      {name:"تحدد القيمة المقدمة للمستفيدين",weight:10},
+      {name:"طموحة",weight:10},
+      {name:"لها واقعية عملية",weight:10},
+      {name:"متسقة مع الرؤية",weight:10},
+    ],
+    rows: [
+      "صيانة الحقوق العامة والحريات الفردية بكفاءات وطنية مؤهلة، وتعزيز مبدأ سيادة القانون ونصرة المظلومين، والأخذ على يد الظالم والحد من التجاوزات وفق مقتضيات الشريعة والنظامية ومن خلال إجراءات واضحة، والتكامل مع الجهات العدلية والأمنية وبناء شركات مع الجهات ذات العلاقة.",
+      "حماية الحقوق والحريات، ونصرة المظلوم والأخذ على يد الظالم، وفقاً للنصوص الشرعية والقواعد المرعية، بكوادر مؤهلة وبيئة عمل مؤسسية والعمل على تكريس ذلك وتعزيزه، بالتعاون مع الجهات العدلية والأمنية ذات العلاقة.",
+      "تحقيق العدالة الجزائية وحماية الحق العام من خلال التحقيق في الجرائم، والتصرف في الدعوى، والادعاء أمام الجهات القضائية، والإشراف على تنفيذ الأحكام، والرقابة على مشروعية إجراءات السجن والتوقيف، وفق الأنظمة وبما يصون الحقوق ويعزز ثقة المجتمع.",
+      "تسعى النيابة العامة بمسؤوليتها في حماية المجتمع وصون الحقوق من خلال مباشرة التحقيق والادعاء ومتابعة الأحكام الجزائية، والرقابة على أماكن التوقيف والسجون، بما يضمن سلامة الإجراءات، ومشروعية الممارسات، وتحقيق العدالة الناجزة.",
+      "تمكين العدالة الجزائية بكفاءة وحياد من خلال ممارسة اختصاصات التحقيق والتصرف في الدعوى، والادعاء العام، والطعن في الأحكام وتنفيذها، والإشراف والرقابة على مشروعية التوقيف والسجن، وتنفيذ الأحكام بما يحفظ الحقوق ويعزز سيادة النظام.",
+      "حماية الحق العام وصون الحريات النظامية عبر إجراءات جزائية عادلة وفعالة، تشمل التحقيق والادعاء ومتابعة الأحكام والرقابة على أماكن التوقيف والسجون، وتنفيذ الأحكام بما يحقق العدالة ويحفظ كرامة الإنسان ويعزز الأمن المجتمعي.",
+    ],
+    scores: null,
+  }
+};
+
+// تهيئة الـ scores
+['v','m','val'].forEach(k=>{
+  DATA[k].scores = DATA[k].rows.map(()=>DATA[k].criteria.map(()=>0));
+});
+
+// ══════════════════════════════════════════════════════════
+// التبويبات
+// ══════════════════════════════════════════════════════════
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════════
+// بناء الجدول
+// ══════════════════════════════════════════════════════════
+function build(k) {
+  const D = DATA[k];
+  const n = D.rows.length, m = D.criteria.length;
+  const maxT = D.criteria.reduce((a,c)=>a+c.weight,0);
+
+  const totals = D.rows.map((_,r)=>D.scores[r].reduce((a,v)=>a+v,0));
+  const ranked = [...totals].map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v);
+  const rankOf = totals.map((_,i)=>ranked.findIndex(r=>r.i===i)+1);
+
+  let h = `<thead>
+  <tr>
+    <th class="th-num" rowspan="3">م</th>
+    <th class="th-proposal-col th-group" rowspan="2">${D.rowLabel}</th>
+    <th class="th-group" colspan="${m}">${D.criteriaLabel}</th>
+    <th class="th-group" rowspan="2" style="width:70px">الإجمالي<br><small style="font-weight:400;opacity:.7">/ ${maxT}</small></th>
+    <th class="th-group" rowspan="2" style="width:52px">الترتيب</th>
+  </tr>
+  <tr>
+    ${D.criteria.map((c,ci)=>`
+      <th class="th-criteria">
+        <span style="cursor:pointer" onclick="editCriteria('${k}',${ci})">${c.name}</span>
+        <button onclick="removeCol('${k}',${ci})" style="display:block;margin:3px auto 0;background:rgba(255,255,255,0.15);border:none;border-radius:3px;color:#fff;font-size:9px;cursor:pointer;padding:1px 4px">✕</button>
+      </th>`).join('')}
+  </tr>
+  <tr>
+    <td class="td-weight-label" style="background:rgba(0,99,65,0.06)">الوزن الأقصى</td>
+    ${D.criteria.map((c,ci)=>`<td class="tr-weights">
+      <input class="w-input" type="number" value="${c.weight}" min="1" max="100"
+        onchange="DATA['${k}'].criteria[${ci}].weight=+this.value||10;build('${k}')">
+    </td>`).join('')}
+    <td class="tr-weights">${maxT}</td><td class="tr-weights">—</td>
+  </tr></thead><tbody>`;
+
+  D.rows.forEach((row,r)=>{
+    const total = totals[r];
+    const pct   = maxT>0?(total/maxT*100).toFixed(1):0;
+    const rank  = rankOf[r];
+    const medal = rank===1?"🥇":rank===2?"🥈":rank===3?"🥉":rank;
+    const totalHtml = total>0
+      ?`<span style="color:${total/maxT>.7?"var(--pp-green)":total/maxT>.5?"var(--gold)":"#c0392b"};font-size:18px;font-weight:900">${total.toFixed(1)}</span>
+        <div class="result-bar"><div class="result-fill" style="width:${pct}%"></div></div>`
+      :`<span style="color:var(--text3);font-size:13px">—</span>`;
+
+    h += `<tr>
+      <td style="font-size:12px;font-weight:700;color:var(--text3);background:var(--pp-light)">${r+1}</td>
+      <td class="td-proposal" ondblclick="openModal('${k}','row',${r})" title="انقر مرتين للتعديل">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:5px">
+          <span>${row}</span>
+          <button onclick="openModal('${k}','row',${r})" style="flex-shrink:0;background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px" title="تعديل">✏️</button>
+        </div>
+        <button onclick="removeRow('${k}',${r})" style="margin-top:3px;background:none;border:none;color:#c0392b;cursor:pointer;font-size:10px">✕ حذف</button>
+      </td>
+      ${D.criteria.map((_,c)=>`<td class="td-score-input">
+        <input type="number" class="score-input ${cls(D.scores[r][c],D.criteria[c].weight)}"
+          value="${D.scores[r][c]||''}" min="0" max="${D.criteria[c].weight}" placeholder="—"
+          oninput="D['scores'][${r}][${c}]=+this.value||0;setInputClass(this,+this.value,${D.criteria[c].weight});updateTotals('${k}')"
+          onfocus="this.select()"
+          onkeydown="nav(event,'${k}',${r},${c})">
+      </td>`).join('')}
+      <td class="td-total">${totalHtml}</td>
+      <td class="td-rank" style="font-size:${rank<=3?'18':'13'}px">${total>0?medal:'—'}</td>
+    </tr>`;
+  });
+
+  h += '</tbody>';
+  document.getElementById(k+'-table').innerHTML = h;
+
+  // ربط D بكائن جافاسكريبت
+  document.querySelectorAll(`#${k}-table .score-input`).forEach((inp,i)=>{
+    const r = Math.floor(i/m), c = i%m;
+    inp.addEventListener('input', function(){
+      DATA[k].scores[r][c] = parseFloat(this.value)||0;
+      setInputClass(this, DATA[k].scores[r][c], DATA[k].criteria[c].weight);
+      updateTotals(k);
+    });
+  });
+
+  updateStats(k, totals, maxT);
+}
+
+function cls(v,max){
+  if(!v)return'';
+  const p=v/max;
+  return p>=.8?'high':p>=.5?'mid':'low';
+}
+function setInputClass(el,v,max){
+  el.className='score-input '+(v?cls(v,max):'');
+}
+
+function updateTotals(k){build(k);}
+
+// ══════════════════════════════════════════════════════════
+// الإحصاءات
+// ══════════════════════════════════════════════════════════
+function updateStats(k, totals, maxT) {
+  const D = DATA[k];
+  const filled = D.scores.flat().filter(v=>v>0).length;
+  const maxVal = Math.max(...totals);
+  const leadIdx = totals.indexOf(maxVal);
+  const leader = maxVal>0 ? (D.rows[leadIdx].slice(0,22)+'…') : '—';
+  document.getElementById(k+'-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${D.rows.length}</div><div class="stat-lbl">مقترح</div></div>
+    <div class="stat-card"><div class="stat-num">${D.criteria.length}</div><div class="stat-lbl">معيار</div></div>
+    <div class="stat-card"><div class="stat-num">${maxT}</div><div class="stat-lbl">أقصى درجة</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--gold)">${filled}</div><div class="stat-lbl">خلية مُعبَّأة</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--pp-green);font-size:${maxVal>0?'12':'22'}px">${leader}</div><div class="stat-lbl">الأعلى تقييماً</div></div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// التنقل بالكيبورد
+// ══════════════════════════════════════════════════════════
+function nav(e,k,r,c){
+  const m=DATA[k].criteria.length, n=DATA[k].rows.length;
+  let nr=r,nc=c;
+  if(e.key==='ArrowDown'||e.key==='Enter'){e.preventDefault();nr=(nr+1)%n;}
+  else if(e.key==='ArrowUp'){e.preventDefault();nr=(nr-1+n)%n;}
+  else if(e.key==='ArrowLeft'){nc++; if(nc>=m){nc=0;nr=(nr+1)%n;}}
+  else if(e.key==='ArrowRight'){nc--; if(nc<0){nc=m-1;nr=(nr-1+n)%n;}}
+  if(nr!==r||nc!==c){
+    e.preventDefault();
+    const ins=document.querySelectorAll(`#${k}-table .score-input`);
+    const idx=nr*m+nc; if(ins[idx])ins[idx].focus();
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// إجراءات
+// ══════════════════════════════════════════════════════════
+function addRow(k){
+  DATA[k].rows.push('مقترح جديد — انقر مرتين للتعديل');
+  DATA[k].scores.push(DATA[k].criteria.map(()=>0));
+  build(k);
+  openModal(k,'row',DATA[k].rows.length-1);
+}
+function removeRow(k,r){
+  if(DATA[k].rows.length<=2){alert('يجب الإبقاء على مقترحَين على الأقل');return;}
+  DATA[k].rows.splice(r,1); DATA[k].scores.splice(r,1); build(k);
+}
+function addCol(k){
+  const name=prompt('اسم المعيار الجديد:'); if(!name)return;
+  const w=parseInt(prompt('الوزن الأقصى (افتراضي 10):')||'10');
+  DATA[k].criteria.push({name:name.trim(),weight:w||10});
+  DATA[k].scores.forEach(row=>row.push(0)); build(k);
+}
+function removeCol(k,ci){
+  if(DATA[k].criteria.length<=3){alert('يجب الإبقاء على 3 معايير على الأقل');return;}
+  DATA[k].criteria.splice(ci,1); DATA[k].scores.forEach(row=>row.splice(ci,1)); build(k);
+}
+function editCriteria(k,ci){
+  const name=prompt('اسم المعيار:',DATA[k].criteria[ci].name); if(!name)return;
+  DATA[k].criteria[ci].name=name.trim(); build(k);
+}
+function clearScores(k){
+  if(!confirm('مسح جميع الدرجات؟'))return;
+  DATA[k].scores=DATA[k].rows.map(()=>DATA[k].criteria.map(()=>0)); build(k);
+}
+
+// ── مودال ────────────────────────────────────────────────
+let _mk=null,_mtype=null,_midx=null;
+function openModal(k,type,idx){
+  _mk=k;_mtype=type;_midx=idx;
+  document.getElementById('modal-title').textContent = '✏️ تعديل النص';
+  document.getElementById('modal-input').value = DATA[k].rows[idx];
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('modal-input').focus(),80);
+}
+function saveModal(){
+  if(_mk===null)return;
+  DATA[_mk].rows[_midx]=document.getElementById('modal-input').value.trim()||DATA[_mk].rows[_midx];
+  document.getElementById('modal-overlay').classList.remove('open');
+  build(_mk); _mk=_mtype=_midx=null;
+}
+function closeModal(e){
+  if(e&&e.target!==document.getElementById('modal-overlay'))return;
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.getElementById('modal-overlay').classList.remove('open');
+  if(e.key==='Enter'&&e.ctrlKey)saveModal();
+});
+
+// ── تصدير CSV ─────────────────────────────────────────────
+function exportCSV(k){
+  const D=DATA[k];
+  const maxT=D.criteria.reduce((a,c)=>a+c.weight,0);
+  const totals=D.rows.map((_,r)=>D.scores[r].reduce((a,v)=>a+v,0));
+  const ranked=[...totals].map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v);
+  const rows=[];
+  rows.push(['م','المقترح',...D.criteria.map(c=>c.name),'الإجمالي','الترتيب']);
+  rows.push(['','الوزن الأقصى',...D.criteria.map(c=>c.weight),maxT,'']);
+  D.rows.forEach((p,r)=>{
+    const rank=ranked.findIndex(x=>x.i===r)+1;
+    rows.push([r+1,p,...D.scores[r],totals[r].toFixed(1),rank]);
+  });
+  const csv='\uFEFF'+rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`مصفوفة_تقييم_${k==='v'?'الرؤية':'الرسالة'}_النيابة.csv`;
+  a.click();
+}
+
+// ══════════════════════════════════════════════════════════
+// إرسال النتائج إلى Google Sheets (إضافة جديدة)
+// ══════════════════════════════════════════════════════════
+
+// ← ضعي رابط Web App هنا بعد نشره من Google Apps Script
+const GAS_URL = 'YOUR_WEB_APP_URL_HERE';
+
+function showToast(msg, type, duration) {
+  duration = duration || 3500;
+  const t = document.getElementById('app-toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(function(){ t.className = 'toast'; }, duration);
+}
+
+function sendToSheet(k) {
+  const D = DATA[k];
+
+  // التحقق من وجود درجات مُدخلة
+  const filled = D.scores.flat().filter(function(v){ return v > 0; }).length;
+  if (filled === 0) {
+    showToast('⚠️ لم يتم إدخال أي درجات بعد', 'error');
+    return;
+  }
+
+  // حساب الإجماليات والترتيب
+  const maxT = D.criteria.reduce(function(a,c){ return a + c.weight; }, 0);
+  const totals = D.rows.map(function(_,r){
+    return D.scores[r].reduce(function(a,v){ return a + v; }, 0);
+  });
+  const ranked = totals.map(function(v,i){ return {v:v,i:i}; })
+                        .slice().sort(function(a,b){ return b.v - a.v; });
+
+  const tabNames = { v:'الرؤية', m:'الرسالة', val:'القيم المؤسسية' };
+
+  const rows = D.rows.map(function(row, r) {
+    const rank = ranked.findIndex(function(x){ return x.i === r; }) + 1;
+    const rowData = { مقترح: row, الإجمالي: totals[r].toFixed(2), الترتيب: rank };
+    D.criteria.forEach(function(c, ci){ rowData[c.name] = D.scores[r][ci]; });
+    return rowData;
+  });
+
+  const payload = {
+    timestamp: new Date().toLocaleString('ar-SA'),
+    tab: tabNames[k],
+    criteriaLabel: D.criteriaLabel,
+    maxTotal: maxT,
+    rows: rows
+  };
+
+  // تعطيل الزر أثناء الإرسال
+  const btn = document.getElementById('send-btn-' + k);
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ جاري الإرسال...'; }
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    showToast('✅ تم إرسال النتائج بنجاح إلى Google Sheets', 'success');
+  })
+  .catch(function(err) {
+    console.error('خطأ في الإرسال:', err);
+    showToast('❌ فشل الإرسال — تحقق من الاتصال بالإنترنت', 'error');
+  })
+  .finally(function() {
+    if (btn) { btn.disabled = false; btn.textContent = '📤 إرسال النتائج'; }
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// تشغيل
+// ══════════════════════════════════════════════════════════
+build('v');
+build('m');
+build('val');
+</script>
+</body>
+</html>
